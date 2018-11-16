@@ -1,0 +1,15 @@
+.photo-grid {
+  /* display: flex;
+  flex-flow: row wrap;
+  align-items: center; */
+  margin: 30px 0px;
+  columns: 3;
+  column-gap: 5px;
+}
+
+.photo-grid .photo-item {
+  /*flex: 1 1;*/
+  min-width: 300px;
+  display: inline-block;
+  /*flex-basis: 0;*/
+}

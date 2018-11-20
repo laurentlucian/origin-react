@@ -83,7 +83,8 @@ class Counter extends Component {
                     margin: "5px",
                     backgroundColor: `${
                       this.state.hello[index].color === true ? "red" : ""
-                    }`
+                    }`,
+                    userSelect: "none"
                   }}
                   key={index}
                   onClick={i => this.boxColor(index)}

@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+const colorDic = ["", "red", "blue", "green", "grey", "pink"];
+
 class Counter extends Component {
   state = {
     hello: [],
@@ -9,7 +11,7 @@ class Counter extends Component {
 
   handleIncrement = () => {
     const { hello } = this.state;
-    hello.push({ hello: "Hello", color: false });
+    hello.push({ hello: "Hello", color: 0 });
     this.setState({ hello, bye: false });
   };
 
@@ -31,8 +33,12 @@ class Counter extends Component {
     //fix this so it switches color between true or false
     //replace only color and pushes in new array
     const Hello = this.state.hello;
-    console.log(Hello[i]);
-    Hello[i].color = !Hello[i].color;
+    if (Hello[i].color < 5) {
+      Hello[i].color++;
+    } else {
+      Hello[i].color = 0;
+    }
+
     this.setState({ hello: Hello });
   };
 
@@ -46,8 +52,10 @@ class Counter extends Component {
       <div
         className="container box"
         style={{
+          width: "auto",
           maxWidth: 600,
-          marginTop: 25
+          marginTop: 25,
+          display: "table"
         }}
       >
         <div
@@ -61,7 +69,6 @@ class Counter extends Component {
           <button
             className="button is-primary box"
             onClick={this.handleIncrement}
-            onKeyDown={this.handleIncrement}
           >
             {this.state.hello.length === 0 ? "Say Hello" : "Again?"}
           </button>
@@ -76,18 +83,17 @@ class Counter extends Component {
             }}
           >
             {this.state.hello.map((hello, index) => {
+              const currentColor = colorDic[this.state.hello[index].color];
               return (
                 <h1
-                  className={`box`} //changes class depending if variable is true or false
+                  className="box"
                   style={{
                     margin: "5px",
-                    backgroundColor: `${
-                      this.state.hello[index].color === true ? "red" : ""
-                    }`,
+                    backgroundColor: `${currentColor}`,
                     userSelect: "none"
                   }}
                   key={index}
-                  onClick={i => this.boxColor(index)}
+                  onClick={e => this.boxColor(index)}
                 >
                   {hello.hello}
                 </h1>

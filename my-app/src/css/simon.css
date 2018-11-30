@@ -1,0 +1,49 @@
+.container {
+  width: 500px;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.buttons {
+  height: 100px;
+  width: 100px;
+  border-radius: 500px;
+  outline: none;
+}
+.buttons:active {
+  background-color: currentColor;
+}
+.play {
+  background-color: currentColor;
+}
+
+#red {
+  border: 5px solid;
+  color: #f21b3f;
+}
+
+#blue {
+  border: 5px solid;
+  color: #08bdbd;
+}
+
+#green {
+  border: 5px solid;
+  color: #29bf12;
+}
+
+#dark {
+  border: 5px solid;
+  color: #421c80;
+}
+
+.middle {
+  display: flex;
+  width: 350px;
+  height: 90px;
+  justify-content: space-between;
+  margin: 9px 0;
+}

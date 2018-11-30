@@ -7,7 +7,7 @@ import Todo from "./components/Todo";
 import Counter from "./components/Counter";
 import WeatherApp from "./components/WeatherApp";
 import Photos from "./components/Photos";
-
+import Simon from "./components/Simon";
 class App extends React.Component {
   render() {
     return (
@@ -29,6 +29,7 @@ class App extends React.Component {
               <Route path="/counter" component={Counter} />
               <Route path="/weather" component={WeatherApp} />
               <Route path="/photos" component={Photos} />
+              <Route path="/simon" component={Simon} />
             </div>
           </Router>
         </div>

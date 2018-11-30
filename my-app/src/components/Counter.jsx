@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-
-const colorDic = ["", "red", "blue", "green", "grey", "pink"];
+import randomColor from "randomcolor";
 
 class Counter extends Component {
   state = {
     hello: [],
     bye: false,
-    render: false
+    render: false,
+    mouseHold: false
   };
 
   handleIncrement = () => {
@@ -30,8 +30,6 @@ class Counter extends Component {
   }
 
   boxColor = i => {
-    //fix this so it switches color between true or false
-    //replace only color and pushes in new array
     const Hello = this.state.hello;
     if (Hello[i].color < 5) {
       Hello[i].color++;
@@ -41,6 +39,40 @@ class Counter extends Component {
 
     this.setState({ hello: Hello });
   };
+
+  holding = null;
+
+  colorHold = index => {
+    const hold = this.state.mouseHold;
+    if (!hold) {
+      this.setState({ mouseHold: true });
+      this.holding = setInterval(() => this.boxColor(index), 80);
+    }
+  };
+
+  helloHold = () => {
+    const hold = this.state.mouseHold;
+    if (!hold) {
+      this.setState({ mouseHold: true });
+      this.holding = setInterval(this.handleIncrement, 100);
+    }
+  };
+
+  unHold = () => {
+    if (this.holding) {
+      this.setState({ mouseHold: false });
+      clearInterval(this.holding);
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener("mouseup", this.unHold);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("mouseup", this.unHold);
+    if (this.holding) clearInterval(this.holding);
+  }
 
   render() {
     const hello = [];
@@ -69,6 +101,7 @@ class Counter extends Component {
           <button
             className="button is-primary box"
             onClick={this.handleIncrement}
+            onMouseDown={this.helloHold}
           >
             {this.state.hello.length === 0 ? "Say Hello" : "Again?"}
           </button>
@@ -83,17 +116,19 @@ class Counter extends Component {
             }}
           >
             {this.state.hello.map((hello, index) => {
-              const currentColor = colorDic[this.state.hello[index].color];
+              const color = randomColor();
+
               return (
                 <h1
                   className="box"
                   style={{
                     margin: "5px",
-                    backgroundColor: `${currentColor}`,
+                    backgroundColor: `${hello.color === 0 ? "" : color}`,
                     userSelect: "none"
                   }}
                   key={index}
                   onClick={e => this.boxColor(index)}
+                  onMouseDown={e => this.colorHold(index)}
                 >
                   {hello.hello}
                 </h1>

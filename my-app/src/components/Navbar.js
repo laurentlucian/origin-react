@@ -74,6 +74,13 @@ class Navbar extends Component {
                 >
                   Photos
                 </NavLink>
+                <NavLink
+                  to="/simon"
+                  className="navbar-item"
+                  onClick={this.handleMenu}
+                >
+                  Simon
+                </NavLink>
               </div>
             </div>
           </div>

@@ -9,109 +9,111 @@ const sound = [
   new Audio(`${soundUrl}4.mp3`)
 ];
 
-const color = ["blue", "red", "dark", "green"];
-
 class Simon extends Component {
   state = {
-    currentLevel: [],
-    player: [],
-    playing: true
+    memory: [],
+    current: [],
+    color: null,
+    playing: true,
+    lost: false
   };
 
-  play = i => {
-    const currentColor = color[i];
-    const button = document.querySelector(`#${currentColor}`);
-    sound[i].play();
-    button.classList.toggle("play");
+  play = (i, t) => {
+    this.setState({ color: i }, () => sound[i].play());
     setTimeout(() => {
-      button.classList.toggle("play");
-    }, 200);
+      this.setState({ color: null });
+    }, t);
   };
 
-  stack = "";
+  initComputer = () => {
+    this.setState(state => {
+      const memory = [...state.memory];
+      memory.push(Math.floor(Math.random() * 3));
+      return { memory: memory, playing: true };
+    }, this.computerTurn);
+  };
 
-  showGame = () => {
-    let num = 0;
-    if (this.state.currentLevel.length !== 0) {
-      this.stack = setInterval(() => {
-        let curLevel = this.state.currentLevel[num];
-        // console.log("current value", curLevel);
-        this.play(curLevel);
-        num++;
-        if (num >= this.state.currentLevel.length) {
-          clearInterval(this.stack);
-          num = 0;
-          // console.log("after interval");
-          this.setState({ player: [], playing: false });
-        }
-      }, 750);
+  computerTurn = () => {
+    clearTimeout(this.computerTimeout);
+
+    const current = [...this.state.current]; // gets current every recursive
+    const memory = [...this.state.memory]; // stays the same within the turn
+    const now = memory[current.length]; // current turn (length is 1 more than index so next turn)
+    console.log(now);
+
+    if (typeof now === "undefined") {
+      console.log("computer done");
+      this.initPlayer();
+      return;
     }
-  };
+    current.push(now); // add the current turn
+    this.play(now, 850);
+    this.setState({
+      current
+    });
 
-  addLevel() {
-    let level = [...this.state.currentLevel];
-    const newNumber = Math.random() * 3;
-    level.push(Math.round(newNumber * 1));
-    // console.log("addLevel", level);
-
-    this.setState({ currentLevel: level, playing: true }, () =>
-      this.showGame()
+    // recursive
+    console.log("current", current.length);
+    this.computerTimeout = setTimeout(
+      () => this.computerTurn(),
+      current.length === memory.length ? 100 : 1100
     );
-  }
-
-  handleClick = index => {
-    clearInterval(this.stack);
-    const playerMove = this.state.player;
-    playerMove.push(index);
-    sound[index].play();
-    this.setState({ player: playerMove }, () => this.checkMove());
   };
 
-  checkMove = () => {
-    for (let i = 0; i < this.state.player.length; i++) {
-      // console.log("currentLevel", this.state.currentLevel);
-      console.log("playerMove", this.state.player);
-      // console.log("currentLevel[i]", this.state.currentLevel[i]);
-      // console.log("playerMove[i]", this.state.player[i]);
-      if (this.state.player[i] === this.state.currentLevel[i]) {
-        this.setState({ player: this.state.player });
-        if (this.state.player.length === this.state.currentLevel.length) {
-          this.setState({ player: [] }, () => this.addLevel());
-          console.log("goodjob");
+  initPlayer = () => {
+    this.setState({ playing: false });
+  };
+
+  playerTurn = (i, e) => {
+    console.log("apertei", i, "tinha que apertar=", this.state.current[0]);
+    this.setState(
+      state => {
+        const [now, ...newCurrent] = state.current;
+        if (now !== i) {
+          // game over
+          return {
+            memory: [],
+            current: [],
+            playing: true,
+            lost: true,
+            color: i
+          };
         }
-      } else {
-        console.log("badjob");
-        this.setState({ currentLevel: [], playing: true }, () =>
-          clearInterval(this.stack)
-        );
-        this.toggleAll();
+
+        if (newCurrent.length === 0) {
+          this.end = setTimeout(() => this.initComputer(), 1000);
+        }
+
+        return {
+          current: newCurrent
+        };
+      },
+      () => {
+        sound[i].pause();
+        this.play(i, 200);
       }
-    }
-  };
-
-  newGame = () => {
-    // const buttons = document.getElementsByClassName("buttons");
-    // for (let i = 0; i < buttons.length; i++) {
-    //   buttons[i].classList.remove("play");
-    // }
-    this.toggleAll();
-
-    clearInterval(this.stack);
-    this.setState({ currentLevel: [], player: [], zero: false }, () =>
-      this.addLevel()
     );
   };
 
-  toggleAll = () => {
-    const buttons = document.getElementsByClassName("buttons");
-    for (let i = 0; i < buttons.length; i++) {
-      buttons[i].classList.toggle("play");
-    }
+  start = () => {
+    this.setState({ playing: true, lost: false });
+    this.initComputer();
+  };
+
+  gameOver = l => {
+    this.setState({ memory: [], current: [], playing: true });
+    l === "l" && this.setState({ lost: true });
   };
 
   componentDidMount() {
+    document.addEventListener(
+      "mousedown",
+      function(e) {
+        e.preventDefault();
+      },
+      false
+    );
     document.addEventListener("keydown", e => this.handleKey(e));
-    this.toggleAll();
   }
 
   componentWillUnmount() {
@@ -120,50 +122,98 @@ class Simon extends Component {
 
   handleKey = e => {
     if (!this.state.playing) {
-      if (e.key === "ArrowLeft") {
-        this.handleClick(0);
-      } else if (e.key === "ArrowUp") {
-        this.handleClick(1);
+      if (e.key === "ArrowUp") {
+        this.playerTurn(0);
+      } else if (e.key === "ArrowLeft") {
+        this.playerTurn(1);
       } else if (e.key === "ArrowRight") {
-        this.handleClick(2);
+        this.playerTurn(2);
       } else if (e.key === "ArrowDown") {
-        this.handleClick(3);
+        this.playerTurn(3);
       }
     }
   };
 
   render() {
+    let button;
+    if (!this.state.memory.length && !this.state.lost) {
+      button = (
+        <button className="button" onClick={this.start}>
+          Start
+        </button>
+      );
+    } else if (this.state.lost) {
+      button = (
+        <button
+          className="button"
+          onClick={this.start}
+          style={{ fontWeight: "bold" }}
+        >
+          Lost! Again?
+        </button>
+      );
+    } else {
+      button = (
+        <button className="button" onClick={this.gameOver}>
+          New Game
+        </button>
+      );
+    }
+
     return (
       <div className="container">
-        <button className="button" onClick={this.newGame}>
-          {this.state.currentLevel.length ? "New Game" : "Start"}
-        </button>
-        <div>{this.state.currentLevel.length}</div>
-        <div
+        {button}
+        <div>{this.state.memory.length}</div>
+        {/* <div>{JSON.stringify(this.state, null, 2)}</div> */}
+        <button
           className="buttons"
           id="blue"
-          onClick={() => this.handleClick(0)}
-          style={this.state.playing ? { pointerEvents: "none" } : {}}
+          onClick={e => this.playerTurn(0, e)}
+          style={{
+            pointerEvents: this.state.playing && "none",
+            backgroundColor:
+              this.state.color === 0 || !this.state.memory.length
+                ? "currentColor"
+                : ""
+          }}
         />
         <div className="middle">
-          <div
+          <button
             className="buttons"
             id="red"
-            onClick={() => this.handleClick(1)}
-            style={this.state.playing ? { pointerEvents: "none" } : {}}
+            onClick={e => this.playerTurn(1, e)}
+            style={{
+              pointerEvents: this.state.playing && "none",
+              backgroundColor:
+                this.state.color === 1 || !this.state.memory.length
+                  ? "currentColor"
+                  : ""
+            }}
           />
-          <div
+          <button
             className="buttons"
             id="dark"
-            onClick={() => this.handleClick(2)}
-            style={this.state.playing ? { pointerEvents: "none" } : {}}
+            onClick={e => this.playerTurn(2, e)}
+            style={{
+              pointerEvents: this.state.playing && "none",
+              backgroundColor:
+                this.state.color === 2 || !this.state.memory.length
+                  ? "currentColor"
+                  : ""
+            }}
           />
         </div>
-        <div
+        <button
           className="buttons"
           id="green"
-          onClick={() => this.handleClick(3)}
-          style={this.state.playing ? { pointerEvents: "none" } : {}}
+          onClick={e => this.playerTurn(3, e)}
+          style={{
+            pointerEvents: this.state.playing && "none",
+            backgroundColor:
+              this.state.color === 3 || !this.state.memory.length
+                ? "currentColor"
+                : ""
+          }}
         />
       </div>
     );

@@ -13,9 +13,7 @@
   border-radius: 500px;
   outline: none;
 }
-.buttons:active {
-  background-color: currentColor;
-}
+
 .play {
   background-color: currentColor;
 }

@@ -116,9 +116,9 @@ class Simon extends Component {
     document.addEventListener("keydown", e => this.handleKey(e));
   }
 
-  componentWillUnmount() {
-    document.removeEventListener("keydown");
-  }
+  // componentWillUnmount() {
+  //   document.removeEventListener("keydown");
+  // }
 
   handleKey = e => {
     if (!this.state.playing) {
@@ -161,7 +161,7 @@ class Simon extends Component {
     }
 
     return (
-      <div className="container">
+      <div className="containerSimon">
         {button}
         <div>{this.state.memory.length}</div>
         {/* <div>{JSON.stringify(this.state, null, 2)}</div> */}

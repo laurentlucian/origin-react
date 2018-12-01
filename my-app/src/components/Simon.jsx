@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import "../css/simon.css";
+import React, { Component } from 'react';
+import '../css/simon.css';
 
-const soundUrl = "https://s3.amazonaws.com/freecodecamp/simonSound";
+const soundUrl = 'https://s3.amazonaws.com/freecodecamp/simonSound';
 const sound = [
   new Audio(`${soundUrl}1.mp3`),
   new Audio(`${soundUrl}2.mp3`),
@@ -39,10 +39,8 @@ class Simon extends Component {
     const current = [...this.state.current]; // gets current every recursive
     const memory = [...this.state.memory]; // stays the same within the turn
     const now = memory[current.length]; // current turn (length is 1 more than index so next turn)
-    console.log(now);
 
-    if (typeof now === "undefined") {
-      console.log("computer done");
+    if (typeof now === 'undefined') {
       this.initPlayer();
       return;
     }
@@ -53,7 +51,6 @@ class Simon extends Component {
     });
 
     // recursive
-    console.log("current", current.length);
     this.computerTimeout = setTimeout(
       () => this.computerTurn(),
       current.length === memory.length ? 100 : 1100
@@ -65,7 +62,7 @@ class Simon extends Component {
   };
 
   playerTurn = (i, e) => {
-    console.log("apertei", i, "tinha que apertar=", this.state.current[0]);
+    // console.log('apertei', i, 'tinha que apertar=', this.state.current[0]);
     this.setState(
       state => {
         const [now, ...newCurrent] = state.current;
@@ -102,33 +99,43 @@ class Simon extends Component {
 
   gameOver = l => {
     this.setState({ memory: [], current: [], playing: true });
-    l === "l" && this.setState({ lost: true });
+    l === 'l' && this.setState({ lost: true });
   };
+
+  fnKey;
+  keyDown;
 
   componentDidMount() {
     document.addEventListener(
-      "mousedown",
-      function(e) {
+      'mousedown',
+      (this.fnKey = e => {
         e.preventDefault();
-      },
+      }),
       false
     );
-    document.addEventListener("keydown", e => this.handleKey(e));
+    document.addEventListener(
+      'keydown',
+      (this.keyDown = e => {
+        e.preventDefault();
+        this.handleKey(e);
+      })
+    );
   }
-
-  // componentWillUnmount() {
-  //   document.removeEventListener("keydown");
-  // }
+  //remove eventlistener of mouse down correctly
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.keyDown);
+    document.removeEventListener('mousedown', this.fnKey, false);
+  }
 
   handleKey = e => {
     if (!this.state.playing) {
-      if (e.key === "ArrowUp") {
+      if (e.key === 'ArrowUp') {
         this.playerTurn(0);
-      } else if (e.key === "ArrowLeft") {
+      } else if (e.key === 'ArrowLeft') {
         this.playerTurn(1);
-      } else if (e.key === "ArrowRight") {
+      } else if (e.key === 'ArrowRight') {
         this.playerTurn(2);
-      } else if (e.key === "ArrowDown") {
+      } else if (e.key === 'ArrowDown') {
         this.playerTurn(3);
       }
     }
@@ -138,81 +145,69 @@ class Simon extends Component {
     let button;
     if (!this.state.memory.length && !this.state.lost) {
       button = (
-        <button className="button" onClick={this.start}>
+        <button className='button' onClick={this.start}>
           Start
         </button>
       );
     } else if (this.state.lost) {
       button = (
-        <button
-          className="button"
-          onClick={this.start}
-          style={{ fontWeight: "bold" }}
-        >
+        <button className='button' onClick={this.start} style={{ fontWeight: 'bold' }}>
           Lost! Again?
         </button>
       );
     } else {
       button = (
-        <button className="button" onClick={this.gameOver}>
+        <button className='button' onClick={this.gameOver}>
           New Game
         </button>
       );
     }
 
     return (
-      <div className="containerSimon">
+      <div className='containerSimon'>
         {button}
         <div>{this.state.memory.length}</div>
         {/* <div>{JSON.stringify(this.state, null, 2)}</div> */}
         <button
-          className="buttons"
-          id="blue"
+          className='buttons'
+          id='blue'
           onClick={e => this.playerTurn(0, e)}
           style={{
-            pointerEvents: this.state.playing && "none",
+            pointerEvents: this.state.playing && 'none',
             backgroundColor:
-              this.state.color === 0 || !this.state.memory.length
-                ? "currentColor"
-                : ""
+              this.state.color === 0 || !this.state.memory.length ? 'currentColor' : ''
           }}
         />
-        <div className="middle">
+        <div className='middle'>
           <button
-            className="buttons"
-            id="red"
+            className='buttons'
+            id='red'
             onClick={e => this.playerTurn(1, e)}
             style={{
-              pointerEvents: this.state.playing && "none",
+              pointerEvents: this.state.playing && 'none',
               backgroundColor:
-                this.state.color === 1 || !this.state.memory.length
-                  ? "currentColor"
-                  : ""
+                this.state.color === 1 || !this.state.memory.length ? 'currentColor' : ''
             }}
           />
           <button
-            className="buttons"
-            id="dark"
+            className='buttons'
+            id='dark'
             onClick={e => this.playerTurn(2, e)}
             style={{
-              pointerEvents: this.state.playing && "none",
+              pointerEvents: this.state.playing && 'none',
               backgroundColor:
-                this.state.color === 2 || !this.state.memory.length
-                  ? "currentColor"
-                  : ""
+                this.state.color === 2 || !this.state.memory.length ? 'currentColor' : ''
             }}
           />
         </div>
         <button
-          className="buttons"
-          id="green"
+          className='buttons'
+          id='green'
           onClick={e => this.playerTurn(3, e)}
           style={{
-            pointerEvents: this.state.playing && "none",
+            pointerEvents: this.state.playing && 'none',
             backgroundColor:
-              this.state.color === 3 || !this.state.memory.length
-                ? "currentColor"
-                : ""
+              this.state.color === 3 || !this.state.memory.length ? 'currentColor' : ''
           }}
         />
       </div>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../css/notes.css';
 import ContentEditable from 'react-contenteditable';
 
+
 class Notes extends Component {
   state = {
     notes: null,
@@ -14,7 +15,7 @@ class Notes extends Component {
     const note = e.target.value;
     // notes.history.splice(this.state.current, 1, note);
     notes.history[this.state.current].html = note;
-    this.setState({ notes: notes });
+    this.setState({ notes });
   };
 
   componentDidMount() {

@@ -26,7 +26,6 @@ class App extends React.Component {
       >
         <div style={{ flexGrow: 1 }}>
           <Router>
-            {/* basename={process.env.PUBLIC_URL}>  */}
             <div>
               <Navbar />
               <Route path='/' component={Home} exact />

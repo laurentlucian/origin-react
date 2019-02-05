@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
-import '../css/notes.css';
-import ContentEditable from 'react-contenteditable';
+import React, { Component } from "react";
+import "../css/notes.css";
+import ContentEditable from "react-contenteditable";
 
 class Notes extends Component {
   state = {
     notes: null,
     current: null,
-    disabled: true
+    disabled: true,
+    err: null
   };
 
   onChange = e => {
@@ -17,17 +18,17 @@ class Notes extends Component {
   };
 
   componentDidMount() {
-    fetch('/notes')
+    fetch("/notes")
       .then(res => res.json())
       .then(json => this.setState({ notes: json.notes }))
-      .catch(err => console.log(err));
+      .catch(err => this.setState({ err: true }));
   }
 
   onBlur = () => {
-    fetch('/notes/save', {
-      method: 'post',
+    fetch("/notes/save", {
+      method: "post",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(this.state)
     });
@@ -39,16 +40,16 @@ class Notes extends Component {
       id: new Date().getTime(),
       html: `New Note ${notes.history.length + 1}`
     });
-    console.log('new notes', notes);
+    console.log("new notes", notes);
 
     const current = notes.history.length - 1;
 
     this.setState({ notes, current, disabled: false });
 
-    fetch('/notes/save', {
-      method: 'post',
+    fetch("/notes/save", {
+      method: "post",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(this.state)
     });
@@ -66,33 +67,43 @@ class Notes extends Component {
     notes.history.splice(this.state.current, 1);
     this.setState({ notes, current: current, disabled: false });
 
-    fetch('/notes/delete', {
-      method: 'post',
+    fetch("/notes/delete", {
+      method: "post",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(this.state)
     });
   };
 
   render() {
-    if (!this.state.notes) return <div>Loading</div>;
+    if (!this.state.notes && !this.state.err)
+      return (
+        <div style={{ fontSize: "50px", display: "flex", justifyContent: "center" }}>Loading</div>
+      );
+    if (this.state.err)
+      return (
+        <div style={{ fontSize: "50px", display: "flex", justifyContent: "center" }}>
+          Local Server Offline
+        </div>
+      );
+
     return (
-      <div className='containerN'>
-        <div className='btns'>
-          <button className='button' id='note-btns' onClick={this.handleNew}>
+      <div className="containerN">
+        <div className="btns">
+          <button className="button" id="note-btns" onClick={this.handleNew}>
             New
           </button>
-          <button className='button' id='note-btns' onClick={this.handleDelete}>
+          <button className="button" id="note-btns" onClick={this.handleDelete}>
             Delete
           </button>
         </div>
-        <div className='note'>
-          <div className='control'>
+        <div className="note">
+          <div className="control">
             {this.state.notes.history.map((v, i) => {
               return (
                 <div
-                  className='menu'
+                  className="menu"
                   key={v.id}
                   onClick={() => this.setState({ current: i, disabled: false })}
                 >
@@ -102,19 +113,19 @@ class Notes extends Component {
             })}
           </div>
 
-          <div className='post'>
+          <div className="post">
             <ContentEditable
               html={
                 this.state.current === null
                   ? this.state.notes.initial
                   : this.state.notes.history[this.state.current].html
               }
-              style={{ outline: 'none', height: '100%', width: '100%' }}
+              style={{ outline: "none", height: "100%", width: "100%" }}
               onChange={this.onChange}
               onBlur={this.onBlur}
               disabled={this.state.disabled}
-              spellCheck='false'
-              tagName='p'
+              spellCheck="false"
+              tagName="p"
             />
           </div>
         </div>

@@ -45,7 +45,7 @@ class Navbar extends Component {
                 <NavLink to="/notes" className="navbar-item" onClick={this.handleMenu}>
                   Notes
                 </NavLink>
-                <NavLink to="/todo" className="navbar-item" onClick={this.handleMenu}>
+                <NavLink to="/todo" className="navbar-item">
                   To Do
                 </NavLink>
                 <NavLink to="/counter" className="navbar-item" onClick={this.handleMenu}>

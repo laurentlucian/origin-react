@@ -38,9 +38,9 @@ const getIcon = num => {
 
 class Day extends Component {
   render() {
-    const iconNumber = this.props.payload.Day.Icon;
+    const { payload, Day } = this.props;
 
-    const payload = this.props.payload;
+    const iconNumber = Day.Icon;
     return (
       <div className="tile is-parent">
         <article className="tile is-child box" style={{ textAlign: "center" }}>

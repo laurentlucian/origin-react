@@ -14,11 +14,7 @@ class Navbar extends Component {
 
   render() {
     return (
-      <nav
-        className="navbar is-black"
-        role="navigation"
-        aria-label="main navigation"
-      >
+      <nav className="navbar is-black" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
           <button
             className="navbar-burger burger"
@@ -46,42 +42,33 @@ class Navbar extends Component {
             <div className="navbar-item has-dropdown is-hoverable">
               <div className="navbar-item navbar-link">Projects</div>
               <div className="navbar-dropdown">
-                <NavLink
-                  to="/todo"
-                  className="navbar-item"
-                  onClick={this.handleMenu}
-                >
+                <NavLink to="/notes" className="navbar-item" onClick={this.handleMenu}>
+                  Notes
+                </NavLink>
+                <NavLink to="/todo" className="navbar-item" onClick={this.handleMenu}>
                   To Do
                 </NavLink>
-                <NavLink
-                  to="/counter"
-                  className="navbar-item"
-                  onClick={this.handleMenu}
-                >
+                <NavLink to="/counter" className="navbar-item" onClick={this.handleMenu}>
                   Hello
                 </NavLink>
-                <NavLink
-                  to="/weather"
-                  className="navbar-item"
-                  onClick={this.handleMenu}
-                >
+                <NavLink to="/weather" className="navbar-item" onClick={this.handleMenu}>
                   Weather
                 </NavLink>
-                <NavLink
-                  to="/photos"
-                  className="navbar-item"
-                  onClick={this.handleMenu}
-                >
+                <NavLink to="/photos" className="navbar-item" onClick={this.handleMenu}>
                   Photos
                 </NavLink>
-                <NavLink
-                  to="/simon"
-                  className="navbar-item"
-                  onClick={this.handleMenu}
-                >
+                <NavLink to="/simon" className="navbar-item" onClick={this.handleMenu}>
                   Simon
                 </NavLink>
               </div>
+            </div>
+          </div>
+
+          <div className="navbar-end">
+            <div className="buttons" style={{ height: "57px" }}>
+              <NavLink to="/auth" className="button is-light" onClick={this.handleMenu}>
+                Login
+              </NavLink>
             </div>
           </div>
         </div>

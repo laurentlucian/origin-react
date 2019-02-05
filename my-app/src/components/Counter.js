@@ -137,10 +137,7 @@ class Counter extends Component {
           </div>
           {this.state.hello.length !== 0 && (
             <div style={{ marginTop: 10 }}>
-              <button
-                className="button is-primary box"
-                onClick={this.handleDelete}
-              >
+              <button className="button is-primary box" onClick={this.handleDelete}>
                 Bye
               </button>
             </div>

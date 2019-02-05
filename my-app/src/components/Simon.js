@@ -106,13 +106,13 @@ class Simon extends Component {
   keyDown;
 
   componentDidMount() {
-    document.addEventListener(
-      'mousedown',
-      (this.fnKey = e => {
-        e.preventDefault();
-      }),
-      false
-    );
+    // document.addEventListener(
+    //   'mousedown',
+    //   (this.fnKey = e => {
+    //     e.preventDefault();
+    //   }),
+    //   false
+    // );
     document.addEventListener(
       'keydown',
       (this.keyDown = e => {
